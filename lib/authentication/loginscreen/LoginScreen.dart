@@ -43,7 +43,7 @@ class LoginScreen extends StatelessWidget {
 
                 // Email Text Field
 
-                Obx(() => TextField(
+                TextField(
                   onChanged: (value) => loginController.email.value = value,
                   decoration: InputDecoration(
                     labelText: 'Email',
@@ -54,12 +54,12 @@ class LoginScreen extends StatelessWidget {
 
                     prefixIcon: const Icon(Icons.email),
                   ),
-                )),
+                ),
 
                 const SizedBox(height: 20),
 
 
-                Obx(() => TextField(
+            TextField(
                   onChanged: (value) => loginController.password.value = value,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
 
                     prefixIcon: const Icon(Icons.email),
                   ),
-                )),
+                ),
 
                 // Password Text Field
                 const SizedBox(height: 30),
@@ -99,12 +99,12 @@ class LoginScreen extends StatelessWidget {
 
                 // Navigate to SignUp screen
                 TextButton(
+
                   onPressed: () {
                     print('clock');
                     Get.to(() => SignupScreen());  // Navigate to signup screen
-                    Get.snackbar('Info', 'Navigate to sign-up screen');
                   },
-                  child: const Text('Don\'t have an account? Sign Up'),
+                  child: const Text('Don\'t have an account? Sign Up' ,style: TextStyle(color: Colors.black),),
                 ),
               ],
             ),

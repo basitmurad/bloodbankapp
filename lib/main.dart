@@ -1,3 +1,4 @@
+import 'package:bloodbankapp/authentication/dashboardscreen/DashboardScreen.dart';
 import 'package:bloodbankapp/authentication/loginscreen/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp( // Use GetMaterialApp instead of MaterialApp
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: DashboardScreen(),
     );
   }
 
