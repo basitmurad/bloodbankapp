@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     // You can also handle actual registration logic here, such as sending the data to a backend
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Successfully registered as a donor!')),
+      const SnackBar(content: Text('Successfully registered as a donor!')),
     );
   }
 
@@ -44,9 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: PreferredSize(
 
-        preferredSize: Size.fromHeight(60), // Height of the AppBar
+        preferredSize: const Size.fromHeight(60), // Height of the AppBar
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(16,), // Adjust the radius here
             bottomRight: Radius.circular(16), // Adjust the radius here
           ),
@@ -55,12 +55,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             elevation: 0, // Remove shadow
             title: Text(
               name!,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             leading: IconButton(onPressed: (){
               Get.back();
 
-            }, icon: Icon(Icons.arrow_back ,color: Colors.white,)),
+            }, icon: const Icon(Icons.arrow_back ,color: Colors.white,)),
             automaticallyImplyLeading: false,
             centerTitle: true,
           ),
@@ -77,26 +77,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Colors.red,
               child: Text(
                 name![0],  // Initials of the user
-                style: TextStyle(fontSize: 40, color: Colors.white),
+                style: const TextStyle(fontSize: 40, color: Colors.white),
               ),
             ),
-            SizedBox(height: 20),
-            SizedBox(height: 20),
-            Text('Username: $username', style: TextStyle(fontSize: 18)),
-            Text('Email: $email', style: TextStyle(fontSize: 18)),
-            Text('Phone: $phone', style: TextStyle(fontSize: 18)),
-            Text('Password: $password', style: TextStyle(fontSize: 18)),
-            Text('Blood Group: $bloodGroup', style: TextStyle(fontSize: 18)),
-            Text('Age: $age', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Text('Username: $username', style: const TextStyle(fontSize: 18)),
+            Text('Email: $email', style: const TextStyle(fontSize: 18)),
+            Text('Phone: $phone', style: const TextStyle(fontSize: 18)),
+            Text('Password: $password', style: const TextStyle(fontSize: 18)),
+            Text('Blood Group: $bloodGroup', style: const TextStyle(fontSize: 18)),
+            Text('Age: $age', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Donor Status
             Text(
               isDonor ? 'You are a registered donor!' : 'You are not a donor yet.',
-              style: TextStyle(fontSize: 16, color: Colors.green),
+              style: const TextStyle(fontSize: 16, color: Colors.green),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Profile Actions
             Row(
@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 ElevatedButton(
                   onPressed: editProfile,
-                  child: Text('Edit Profile'),
+                  child: const Text('Edit Profile'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.blue,
                   ),

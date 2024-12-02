@@ -1,8 +1,9 @@
-import 'package:bloodbankapp/authentication/ImagesPath.dart';
+import 'package:bloodbankapp/authentication/dashboardscreen/DashboardScreen.dart';
 import 'package:bloodbankapp/authentication/signupscreen/SignupScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../LocationService.dart';
 import 'LoginController.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -13,7 +14,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LocationService locationService = LocationService();
+
+    // Request location permission when the app starts or screen loads
+    locationService.requestLocationPermissionAndGetLocation();
     double screenHeight = MediaQuery.of(context).size.height;
+
 
     return Scaffold(
       body: SingleChildScrollView(  // This allows scrolling if the content overflows
@@ -81,9 +87,10 @@ class LoginScreen extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    loginController.login();
+
+                    Get.to(DashboardScreen());
+                    // loginController.login();
                   },
-                  child: const Text('Login' ,style: TextStyle(color: Colors.white),),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,  // Button background color (you can customize it)
                     shape: RoundedRectangleBorder(
@@ -91,6 +98,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Optional: Add padding for a better appearance
                   ),
+                  child: const Text('Login' ,style: TextStyle(color: Colors.white),),
                 )
 
 ,

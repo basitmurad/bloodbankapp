@@ -1,7 +1,9 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'SignupController.dart';
+import 'package:flutter/services.dart';
 
 class SignupScreen extends StatelessWidget {
   final SignupController controller = Get.put(SignupController());
@@ -9,26 +11,24 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60), // Height of the AppBar
+        preferredSize: const Size.fromHeight(60),
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30), // Adjust the radius here
-            bottomRight: Radius.circular(30), // Adjust the radius here
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
           ),
           child: AppBar(
-            backgroundColor: Colors.red, // Change the AppBar color
-            elevation: 0, // Remove shadow
-            title: Text(
-              'Rounded AppBar',
+            backgroundColor: Colors.red,
+            elevation: 0,
+            title: const Text(
+              'Sign Up',
               style: TextStyle(color: Colors.white),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white), // Set the back button color to white
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                // Add your back button functionality here
                 Navigator.pop(context);
               },
             ),
@@ -37,12 +37,11 @@ class SignupScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(  // To allow scrolling if content overflows
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Heading Text
-              Text(
+              const Text(
                 'Create an Account',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -50,109 +49,132 @@ class SignupScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Name Input
               TextField(
                 controller: controller.usernameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Full Name',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Email Input
               TextField(
                 controller: controller.emailController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Phone Number Input
               TextField(
                 controller: controller.phoneController,
                 keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Password Input
               TextField(
                 controller: controller.passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Blood Group Input
-              TextField(
-                controller: controller.bloodGroupController,
-                decoration: InputDecoration(
-                  labelText: 'Blood Group',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16),
-
-              // Age Input
-              TextField(
-                controller: controller.ageController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Age',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16),
-
-              // Gender Selection (Dropdown or Radio Buttons)
-              DropdownButtonFormField<String>(
-                value: controller.selectedGender.value,
-                onChanged: (String? newValue) {
-                  controller.selectedGender.value = newValue!;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Gender',
-                  border: OutlineInputBorder(),
-                ),
-                items: ['Male', 'Female', 'Other']
-                    .map((gender) => DropdownMenuItem<String>(
-                  value: gender,
-                  child: Text(gender),
-                ))
-                    .toList(),
-              ),
-              SizedBox(height: 30),
+              // const SizedBox(height: 16),
+              //
+              // // Blood Group Input
+              // TextField(
+              //   controller: controller.bloodGroupController,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Blood Group',
+              //     border: OutlineInputBorder(),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              //
+              // // Age Input
+              // TextField(
+              //   controller: controller.ageController,
+              //   keyboardType: TextInputType.number,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Age',
+              //     border: OutlineInputBorder(),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              //
+              // // Gender Selection (Dropdown or Radio Buttons)
+              // DropdownButtonFormField<String>(
+              //   value: controller.selectedGender.value,
+              //   onChanged: (String? newValue) {
+              //     controller.selectedGender.value = newValue!;
+              //   },
+              //   decoration: const InputDecoration(
+              //     labelText: 'Gender',
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   items: ['Male', 'Female', 'Other']
+              //       .map((gender) => DropdownMenuItem<String>(
+              //     value: gender,
+              //     child: Text(gender),
+              //   ))
+              //       .toList(),
+              // ),
+              const SizedBox(height: 30),
 
               // Sign Up Button
               ElevatedButton(
-                onPressed: controller.handleSignup,
-                child: Text('Sign Up' ,style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  if (_validateForm()) {
+                    // Show progress dialog before starting the signup process
+                    Get.dialog(
+                      Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      barrierDismissible: false,  // Prevent dismissing the dialog by tapping outside
+                    );
+
+                     controller.handleSignup();
+
+                    // Close the progress dialog after signup is complete
+                    Get.back();
+                  }
+
+                  // if (_validateForm()) {
+                  //   controller.handleSignup();
+                  // }
+                },
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,  // Button background color (you can customize it)
+                  backgroundColor: Colors.red,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6), // Set the border radius to 6
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Optional: Add padding for a better appearance
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Terms and Conditions
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       'By signing up, you agree with ',
                       style: TextStyle(fontSize: 14),
@@ -161,10 +183,9 @@ class SignupScreen extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        // Add logic to navigate to the Terms and Conditions page or show a dialog.
                         print('Navigate to Terms and Conditions');
                       },
-                      child: Text(
+                      child: const Text(
                         'Terms and Conditions',
                         style: TextStyle(
                           fontSize: 14,
@@ -176,12 +197,29 @@ class SignupScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
-
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // Form validation method
+  bool _validateForm() {
+    String email = controller.emailController.text.trim();
+    String password = controller.passwordController.text.trim();
+
+    if (email.isEmpty || !RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
+      Get.snackbar('Error', 'Please enter a valid email address');
+      return false;
+    }
+
+    if (password.isEmpty || password.length < 6) {
+      Get.snackbar('Error', 'Password must be at least 6 characters');
+      return false;
+    }
+
+    return true;
   }
 }

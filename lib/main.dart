@@ -1,11 +1,28 @@
 import 'package:bloodbankapp/authentication/dashboardscreen/DashboardScreen.dart';
 import 'package:bloodbankapp/authentication/loginscreen/LoginScreen.dart';
+import 'package:bloodbankapp/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'authentication/signupscreen/SignupScreen.dart';
+import 'mongo_dart.dart';
 
-void main() {
+Future<void> main() async {
+
+  try{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    print("Firebase Connected Successfully!");
+
+  }
+  catch (e){
+    print("Firebase Do not connected ! $e");
+
+
+  }
+
+
   runApp(const MyApp());
 }
 
@@ -17,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp( // Use GetMaterialApp instead of MaterialApp
       debugShowCheckedModeBanner: false,
-      home: DashboardScreen(),
+      home: LoginScreen(),
     );
   }
 

@@ -63,16 +63,16 @@ class NearDonorScreen extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
 
-        preferredSize: Size.fromHeight(60), // Height of the AppBar
+        preferredSize: const Size.fromHeight(60), // Height of the AppBar
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(16,), // Adjust the radius here
             bottomRight: Radius.circular(16), // Adjust the radius here
           ),
           child: AppBar(
             backgroundColor: Colors.red, // Change the AppBar color
             elevation: 0, // Remove shadow
-            title: Text(
+            title: const Text(
               'Within reach',
               style: TextStyle(color: Colors.white),
             ),
@@ -90,13 +90,13 @@ class NearDonorScreen extends StatelessWidget {
             children: [
 
 
-              Text("Saving Lives, One Donation at a Time" ,style: TextStyle( fontWeight: FontWeight.w500,fontSize: 18 ),),
+              const Text("Saving Lives, One Donation at a Time" ,style: TextStyle( fontWeight: FontWeight.w500,fontSize: 18 ),),
 
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               GridView.builder(
                 shrinkWrap: true,  // Ensures the GridView doesn't take up more space than needed
-                physics: NeverScrollableScrollPhysics(),  // Prevents nested scrolling behavior
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                physics: const NeverScrollableScrollPhysics(),  // Prevents nested scrolling behavior
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,  // Number of columns
                   crossAxisSpacing: 16.0,  // Horizontal space between items
                   mainAxisSpacing: 16.0,  // Vertical space between items
@@ -164,26 +164,26 @@ class DonorCard extends StatelessWidget {
             // Display the name
             Text(
               name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.white, // Text color white for contrast
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // Display the gender
             Text(
               'Gender: $gender',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white70, // Lighter text for gender
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Display the blood group
             Text(
               'Blood Group: $bloodGroup',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white70, // Lighter text for blood group
               ),
@@ -192,12 +192,12 @@ class DonorCard extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {},
-              child: Text("Contact"),
+              child: const Text("Contact"),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 30), // Sets width to fill and height to 50
+                minimumSize: const Size(double.infinity, 30), // Sets width to fill and height to 50
                 foregroundColor: Colors.red, // Text color for the button
                 backgroundColor: Colors.white, // Button background color
-                padding: EdgeInsets.symmetric(horizontal: 16), // Adjust padding if needed
+                padding: const EdgeInsets.symmetric(horizontal: 16), // Adjust padding if needed
               ),
             )],
         ),
