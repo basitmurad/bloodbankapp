@@ -109,13 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     foregroundColor: Colors.white, backgroundColor: Colors.blue,
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: isDonor ? null : registerAsDonor,  // Disable button if already a donor
-                  child: Text(isDonor ? 'Registered as Donor' : 'Register as Donor'),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.red,
-                  ),
-                ),
               ],
             ),
           ],
