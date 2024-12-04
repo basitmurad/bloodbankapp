@@ -1,65 +1,74 @@
 import 'package:bloodbankapp/authentication/Colors.dart';
+import 'package:bloodbankapp/authentication/map/GoogleMapWebView.dart';
 import 'package:bloodbankapp/authentication/neardonorscreen/NearDonorScreen.dart';
+import 'package:bloodbankapp/authentication/signupscreen/SignupScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../donationDetailScreen/AddDetailsScreen.dart';
+import '../loginscreen/LoginScreen.dart';
 import '../profilescreen/ProfileScreen.dart';
 
-class DashboardScreen extends StatelessWidget {
-  // Sample donor data
-  final List<Map<String, String>> donors = [
-    {
-      'name': 'John Doe',
-      'bloodGroup': 'O+',
-      'gender': 'Male',
-    },
-    {
-      'name': 'Jane Smith',
-      'bloodGroup': 'A+',
-      'gender': 'Female',
-    },
-    {
-      'name': 'Sarah Lee',
-      'bloodGroup': 'B+',
-      'gender': 'Female',
-    },
-    {
-      'name': 'Michael Green',
-      'bloodGroup': 'AB+',
-      'gender': 'Male',
-    },
-    {
-      'name': 'Emily Davis',
-      'bloodGroup': 'O-',
-      'gender': 'Female',
-    },
-    {
-      'name': 'David White',
-      'bloodGroup': 'A-',
-      'gender': 'Male',
-    },
-    {
-      'name': 'Sarah Lee',
-      'bloodGroup': 'B+',
-      'gender': 'Female',
-    },
-    {
-      'name': 'Michael Green',
-      'bloodGroup': 'AB+',
-      'gender': 'Male',
-    },
-    {
-      'name': 'Emily Davis',
-      'bloodGroup': 'O-',
-      'gender': 'Female',
-    },
-    {
-      'name': 'David White',
-      'bloodGroup': 'A-',
-      'gender': 'Male',
-    },
-  ];
+class DashboardScreen extends StatefulWidget {
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool isLoggedIn = false;
+  List<Map<String, String>> donors = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+    fetchDonors(); // Fetch donor data when the screen loads
+
+  }
+
+  // Method to fetch donor data from Firebase Realtime Database
+  Future<void> fetchDonors() async {
+    final DatabaseReference donorRef = FirebaseDatabase.instance.ref().child("donors");
+
+    // Fetch the data from Firebase Realtime Database
+    final snapshot = await donorRef.get();
+
+    if (snapshot.exists) {
+      // Parse the data and update the donor list
+      final donorsData = snapshot.value as Map<dynamic, dynamic>;
+      List<Map<String, String>> loadedDonors = [];
+      donorsData.forEach((key, value) {
+        loadedDonors.add({
+          'name': value['name'] ?? 'Unknown',
+          'bloodGroup': value['bloodGroup'] ?? 'Unknown',
+          'gender': value['gender'] ?? 'Unknown',
+        });
+      });
+
+      setState(() {
+        donors = loadedDonors; // Update the state with the fetched data
+      });
+    } else {
+      // Handle case where data doesn't exist
+      Get.snackbar("Error", "No donor data found.");
+    }
+  }
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? loggedIn = prefs.getBool("isLoggedIn");
+
+    if (loggedIn == null || !loggedIn) {
+      // If not logged in, navigate to LoginScreen
+      Get.offAll(() => LoginScreen());
+    } else {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }}
 
   @override
   Widget build(BuildContext context) {
@@ -93,94 +102,52 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: 32,
-              width: 120,
-              child: ElevatedButton(
-                onPressed: () {
 
+        SizedBox(
+        height: 32,
+        width: 120,
+        child: ElevatedButton(
+          onPressed: () async {
 
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true, // Make the height customizable
+            final currentUser = FirebaseAuth.instance.currentUser;
+            if (currentUser != null && isLoggedIn ==true)  {
 
-                      builder: (BuildContext context)
-                  {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
+              if (kDebugMode) {
+                print("User is not null");
+              }
+              // User is authenticated
+              Get.to(()=>  AddDetailsScreen());
+            }
+             else if(currentUser != null && isLoggedIn ==false){
+              Get.to(()=>  LoginScreen());
 
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Become a Blood Donor',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                                'Please provide the following details to donate blood:'),
-                            const SizedBox(height: 16),
-                            // Add form fields or other details here
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Name',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Age',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Blood Type',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Handle the submit logic here
-                                Navigator.pop(context); // Close the bottom sheet
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Thank you for donating!')),
-                                );
-                              },
-                              child: const Text('Submit'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
+            }
 
+            else {
+              // User not authenticated
+              Get.snackbar(
+                "Authentication Required",
+                "Please log in to request a donor.",
+                snackPosition: SnackPosition.BOTTOM,
+              );
 
+              Get.to(() =>SignupScreen());
 
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(30, 30),
-                  // Sets width to fill and height to 50
-                  padding: const EdgeInsets.all(8),
+            }
 
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                ), // Disable button if already a donor
-                child: const Text(
-                  'Become a Now',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ),
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(30, 30),
+            padding: const EdgeInsets.all(8),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.red,
+          ),
+          child: const Text(
+            'Become a Donor',
+            style: TextStyle(fontSize: 12),
+          ),
+        ),
+      ),
           ],
         ),
       ),
@@ -221,9 +188,8 @@ class DashboardScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        // Wrap the body in a SingleChildScrollView for scrolling
-        padding: const EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10 ,horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -234,29 +200,36 @@ class DashboardScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              height: 600,
-              child: SingleChildScrollView(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  // Ensures the GridView doesn't take up more space than needed
-                  physics: const NeverScrollableScrollPhysics(),
-                  // Prevents nested scrolling behavior
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Number of columns
-                    crossAxisSpacing: 16.0, // Horizontal space between items
-                    mainAxisSpacing: 16.0, // Vertical space between items
-                    childAspectRatio: 1.001, // Adjust the card aspect ratio
-                  ),
-                  itemCount: donors.length,
-                  itemBuilder: (context, index) {
-                    return DonorCard(
+            SizedBox(
+              height: 500,
+              child: GridView.builder(
+              shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 1.001,
+                ),
+                itemCount: donors.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the Google Map screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GoogleMapWebView()
+                        ),
+                      );
+                    },
+                    child: DonorCard(
                       name: donors[index]['name']!,
                       gender: donors[index]['gender']!,
                       bloodGroup: donors[index]['bloodGroup']!,
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 20),

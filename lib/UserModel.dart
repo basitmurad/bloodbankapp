@@ -1,3 +1,4 @@
+
 // import 'package:get/get.dart';
 //
 // class UserModel {
@@ -81,12 +82,8 @@ class UserModel {
   String email;
   String phone;
   String password;
-  String bloodGroup;
-  String age;
-  String currentAddress;
-  double latitude; // Added latitude field
-  double longitude; // Added longitude field
-  RxString selectedGender;
+  String userID;
+
 
   // Constructor to initialize the UserModel
   UserModel({
@@ -94,12 +91,8 @@ class UserModel {
     required this.email,
     required this.phone,
     required this.password,
-    required this.bloodGroup,
-    required this.age,
-    required this.currentAddress,
-    required this.latitude,  // Initialize latitude
-    required this.longitude, // Initialize longitude
-    required this.selectedGender,
+    required this.userID,
+
   });
 
   // Method to convert the model into a map (useful for serialization)
@@ -109,12 +102,8 @@ class UserModel {
       'email': email,
       'phone': phone,
       'password': password,
-      'bloodGroup': bloodGroup,
-      'age': age,
-      'currentAddress': currentAddress,
-      'latitude': latitude,   // Added latitude to the map
-      'longitude': longitude, // Added longitude to the map
-      'gender': selectedGender.value,
+      'userID': userID,
+
     };
   }
 
@@ -125,12 +114,8 @@ class UserModel {
       email: map['email'],
       phone: map['phone'],
       password: map['password'],
-      bloodGroup: map['bloodGroup'],
-      age: map['age'],
-      currentAddress: map['currentAddress'],
-      latitude: map['latitude'],  // Get latitude from map
-      longitude: map['longitude'], // Get longitude from map
-      selectedGender: RxString(map['gender']),
+      userID: map['userID'],
+
     );
   }
 
@@ -140,11 +125,7 @@ class UserModel {
         email.isNotEmpty &&
         phone.isNotEmpty &&
         password.isNotEmpty &&
-        bloodGroup.isNotEmpty &&
-        age.isNotEmpty &&
-        currentAddress.isNotEmpty &&
-        latitude != 0.0 &&  // Ensure latitude is not zero (or any invalid value)
-        longitude != 0.0 && // Ensure longitude is not zero (or any invalid value)
-        selectedGender.isNotEmpty;
+        userID.isNotEmpty ;
+
   }
 }

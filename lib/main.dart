@@ -1,5 +1,6 @@
 import 'package:bloodbankapp/authentication/dashboardscreen/DashboardScreen.dart';
 import 'package:bloodbankapp/authentication/loginscreen/LoginScreen.dart';
+import 'package:bloodbankapp/authentication/map/GoogleMapWebView.dart';
 import 'package:bloodbankapp/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,11 @@ import 'mongo_dart.dart';
 
 Future<void> main() async {
 
+
+
   try{
     WidgetsFlutterBinding.ensureInitialized();
+
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     print("Firebase Connected Successfully!");
 
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp( // Use GetMaterialApp instead of MaterialApp
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: DashboardScreen(),
     );
   }
 

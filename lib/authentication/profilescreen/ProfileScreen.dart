@@ -1,4 +1,5 @@
-import 'package:bloodbankapp/authentication/loginscreen/LoginController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -9,35 +10,97 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? name = 'John Doe';  // Example user data
-  String? email = 'john.doe@example.com';
-  String? phone = '+123456789';
-  bool isDonor = false;  // User's donor status
-  final String username = 'John Doe';
+  String name ='' ;  // Example user data
+  String email ='';
+  String phone ='';
+  String gender='';
+  // User's donor status
 
-  final String password = '********'; // In a real app, you should not display passwords like this.
-  final String bloodGroup = 'O+';
-  final String age = '30';
-  // Handle donor registration
-  void registerAsDonor() {
-    setState(() {
-      isDonor = true;
-    });
-
-    // You can also handle actual registration logic here, such as sending the data to a backend
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Successfully registered as a donor!')),
-    );
-  }
-
-  // Handle editing user profile (name, phone, etc.)
+   String? bloodGroup ;
   void editProfile() {
     // In a real app, you would show a form to edit the profile here
     // For now, let's just update the name to demonstrate
     setState(() {
-      name = 'Updated User Name';
+      name = 'Up';
     });
   }
+
+
+
+
+  Future<void> fetchUserDetails() async {
+    try {
+      // Get the current user ID
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      // Reference to the user's node in the Firebase Realtime Database
+      final DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users").child(userId);
+
+      // Fetch the data from Firebase Realtime Database
+      final DataSnapshot snapshot = await userRef.get();
+
+      // Check if the snapshot exists and has data
+      if (snapshot.exists) {
+        // Convert snapshot value to a Map
+        final Map<String, dynamic> userData = Map<String, dynamic>.from(snapshot.value as Map);
+
+        // Extract specific fields (e.g., name and other details)
+
+
+         setState(() {
+           name = userData['username'] ?? 'No Name';
+           email = userData['email'] ?? 'No Email';
+         });
+        // Print or use the data as needed
+        print("Name: $name");
+        print("Email: $email");
+      } else {
+        print("No data available for the user.");
+      }
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
+  }
+  Future<void> fetchUserDetailsBlood() async {
+    try {
+      // Get the current user ID
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      // Reference to the user's node in the Firebase Realtime Database
+      final DatabaseReference userRef = FirebaseDatabase.instance.ref().child("donors").child(userId);
+
+      // Fetch the data from Firebase Realtime Database
+      final DataSnapshot snapshot = await userRef.get();
+
+      // Check if the snapshot exists and has data
+      if (snapshot.exists) {
+        // Convert snapshot value to a Map
+        final Map<String, dynamic> userData = Map<String, dynamic>.from(snapshot.value as Map);
+
+        // Extract specific fields (e.g., name and other details)
+         bloodGroup = userData['bloodGroup'] ?? 'No ';
+         gender = userData['gender'] ?? 'No ';
+         phone = userData['phone'] ?? 'No ';
+
+         
+         print("Your details are $phone  $gender   $bloodGroup");
+        // Print or use the data as needed
+
+      } else {
+        print("No data available for the user.");
+      }
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
+  }
+
+@override
+  void initState() {
+    super.initState();
+    fetchUserDetails();
+    fetchUserDetailsBlood();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.red, // Change the AppBar color
             elevation: 0, // Remove shadow
             title: Text(
-              name!,
+              name,
               style: const TextStyle(color: Colors.white),
             ),
             leading: IconButton(onPressed: (){
@@ -76,26 +139,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               radius: 40,
               backgroundColor: Colors.red,
               child: Text(
-                name![0],  // Initials of the user
+                (name.isNotEmpty ? name[0] : '?'),  // Display '?' if name is empty
                 style: const TextStyle(fontSize: 40, color: Colors.white),
               ),
             ),
             const SizedBox(height: 20),
-            const SizedBox(height: 20),
-            Text('Username: $username', style: const TextStyle(fontSize: 18)),
+
             Text('Email: $email', style: const TextStyle(fontSize: 18)),
             Text('Phone: $phone', style: const TextStyle(fontSize: 18)),
-            Text('Password: $password', style: const TextStyle(fontSize: 18)),
-            Text('Blood Group: $bloodGroup', style: const TextStyle(fontSize: 18)),
-            Text('Age: $age', style: const TextStyle(fontSize: 18)),
+            // Text('Blood Group: $bloodGroup', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 20),
             const SizedBox(height: 20),
 
             // Donor Status
-            Text(
-              isDonor ? 'You are a registered donor!' : 'You are not a donor yet.',
-              style: const TextStyle(fontSize: 16, color: Colors.green),
-            ),
             const SizedBox(height: 20),
 
             // Profile Actions

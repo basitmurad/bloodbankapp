@@ -1,9 +1,6 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'SignupController.dart';
-import 'package:flutter/services.dart';
 
 class SignupScreen extends StatelessWidget {
   final SignupController controller = Get.put(SignupController());
@@ -146,7 +143,7 @@ class SignupScreen extends StatelessWidget {
                       barrierDismissible: false,  // Prevent dismissing the dialog by tapping outside
                     );
 
-                     controller.handleSignup();
+                    controller.handleSignup();
 
                     // Close the progress dialog after signup is complete
                     Get.back();

@@ -1,2 +1,2 @@
-const Url ="mongodb+srv://blood:123456@cluster0.1ktct.mongodb.net/blood?retryWrites=true&w=majority&appName=Cluster0";
+const String Url = "mongodb+srv://ehtishamzahid039:seDKcQ2jaFpRcGvl@cluster0.6l5q5.mongodb.net/";
 const collecitionName = "users";
