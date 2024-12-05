@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../donationDetailScreen/AddDetailsScreen.dart';
+import '../donationDetailScreen/MyHomePage.dart';
 import '../loginscreen/LoginScreen.dart';
 import '../profilescreen/ProfileScreen.dart';
 
@@ -30,7 +31,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   }
 
-  // Method to fetch donor data from Firebase Realtime Database
   Future<void> fetchDonors() async {
     final DatabaseReference donorRef = FirebaseDatabase.instance.ref().child("donors");
 
@@ -46,8 +46,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           'name': value['name'] ?? 'Unknown',
           'bloodGroup': value['bloodGroup'] ?? 'Unknown',
           'gender': value['gender'] ?? 'Unknown',
+          'phone': value['phone'] ?? 'Unknown',
+          'latitude': value['latitude']?.toString() ?? 'Unknown', // Convert to String
+          'longitude': value['longitude']?.toString() ?? 'Unknown', // Convert to String
         });
       });
+      print("data is $loadedDonors");
 
       setState(() {
         donors = loadedDonors; // Update the state with the fetched data
@@ -57,6 +61,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
       Get.snackbar("Error", "No donor data found.");
     }
   }
+
+
+  // Method to fetch donor data from Firebase Realtime Database
+  // Future<void> fetchDonors() async {
+  //   final DatabaseReference donorRef = FirebaseDatabase.instance.ref().child("donors");
+  //
+  //   // Fetch the data from Firebase Realtime Database
+  //   final snapshot = await donorRef.get();
+  //
+  //   if (snapshot.exists) {
+  //     // Parse the data and update the donor list
+  //     final donorsData = snapshot.value as Map<dynamic, dynamic>;
+  //     List<Map<String, String>> loadedDonors = [];
+  //     donorsData.forEach((key, value) {
+  //       loadedDonors.add({
+  //         'name': value['name'] ?? 'Unknown',
+  //         'bloodGroup': value['bloodGroup'] ?? 'Unknown',
+  //         'gender': value['gender'] ?? 'Unknown',
+  //         'phone': value['phone'] ?? 'Unknown',
+  //         'latitude': value['latitude'] ?? 'Unknown',
+  //         'longitude': value['longitude'] ?? 'Unknown',
+  //       });
+  //     });
+  //     print("data is $loadedDonors");
+  //
+  //     setState(() {
+  //       donors = loadedDonors; // Update the state with the fetched data
+  //     });
+  //   } else {
+  //     // Handle case where data doesn't exist
+  //     Get.snackbar("Error", "No donor data found.");
+  //   }
+  // }
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? loggedIn = prefs.getBool("isLoggedIn");
@@ -219,7 +256,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GoogleMapWebView()
+                          builder: (context) => MyHomePage(lat: donors[index]['latitude']!, long: donors[index]['longitude']!, number: donors[index]['phone']!,)
                         ),
                       );
                     },

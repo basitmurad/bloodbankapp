@@ -21,7 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // In a real app, you would show a form to edit the profile here
     // For now, let's just update the name to demonstrate
     setState(() {
-      name = 'Up';
     });
   }
 
@@ -54,6 +53,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Print or use the data as needed
         print("Name: $name");
         print("Email: $email");
+
+
+
       } else {
         print("No data available for the user.");
       }
@@ -78,11 +80,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final Map<String, dynamic> userData = Map<String, dynamic>.from(snapshot.value as Map);
 
         // Extract specific fields (e.g., name and other details)
-         bloodGroup = userData['bloodGroup'] ?? 'No ';
-         gender = userData['gender'] ?? 'No ';
-         phone = userData['phone'] ?? 'No ';
 
-         
+
+
+         setState(() {
+           bloodGroup = userData['bloodGroup'] ?? 'No ';
+           gender = userData['gender'] ?? 'No ';
+           phone = userData['phone'] ?? 'No ';
+         });
          print("Your details are $phone  $gender   $bloodGroup");
         // Print or use the data as needed
 
@@ -147,6 +152,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             Text('Email: $email', style: const TextStyle(fontSize: 18)),
             Text('Phone: $phone', style: const TextStyle(fontSize: 18)),
+            Text('Phone: $bloodGroup', style: const TextStyle(fontSize: 18)),
+            Text('Phone: $gender', style: const TextStyle(fontSize: 18)),
             // Text('Blood Group: $bloodGroup', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 20),
             const SizedBox(height: 20),
@@ -160,10 +167,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 ElevatedButton(
                   onPressed: editProfile,
-                  child: const Text('Edit Profile'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.blue,
                   ),
+                  child: const Text('Delete Yourself from donor'),
                 ),
               ],
             ),
