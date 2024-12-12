@@ -1,5 +1,4 @@
 import 'package:bloodbankapp/authentication/Colors.dart';
-import 'package:bloodbankapp/authentication/map/GoogleMapWebView.dart';
 import 'package:bloodbankapp/authentication/neardonorscreen/NearDonorScreen.dart';
 import 'package:bloodbankapp/authentication/signupscreen/SignupScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,37 +62,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
-  // Method to fetch donor data from Firebase Realtime Database
-  // Future<void> fetchDonors() async {
-  //   final DatabaseReference donorRef = FirebaseDatabase.instance.ref().child("donors");
-  //
-  //   // Fetch the data from Firebase Realtime Database
-  //   final snapshot = await donorRef.get();
-  //
-  //   if (snapshot.exists) {
-  //     // Parse the data and update the donor list
-  //     final donorsData = snapshot.value as Map<dynamic, dynamic>;
-  //     List<Map<String, String>> loadedDonors = [];
-  //     donorsData.forEach((key, value) {
-  //       loadedDonors.add({
-  //         'name': value['name'] ?? 'Unknown',
-  //         'bloodGroup': value['bloodGroup'] ?? 'Unknown',
-  //         'gender': value['gender'] ?? 'Unknown',
-  //         'phone': value['phone'] ?? 'Unknown',
-  //         'latitude': value['latitude'] ?? 'Unknown',
-  //         'longitude': value['longitude'] ?? 'Unknown',
-  //       });
-  //     });
-  //     print("data is $loadedDonors");
-  //
-  //     setState(() {
-  //       donors = loadedDonors; // Update the state with the fetched data
-  //     });
-  //   } else {
-  //     // Handle case where data doesn't exist
-  //     Get.snackbar("Error", "No donor data found.");
-  //   }
-  // }
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? loggedIn = prefs.getBool("isLoggedIn");

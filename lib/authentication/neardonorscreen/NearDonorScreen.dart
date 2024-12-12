@@ -1,64 +1,67 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-class NearDonorScreen extends StatelessWidget {
+import '../donationDetailScreen/MyHomePage.dart';
+
+class NearDonorScreen extends StatefulWidget {
   const NearDonorScreen({super.key});
+
+  @override
+  State<NearDonorScreen> createState() => _NearDonorScreenState();
+}
+
+class _NearDonorScreenState extends State<NearDonorScreen> {
+
+  List<Map<String, String>> donors = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDonors(); // Fetch donor data when the screen loads
+
+  }
+
+  Future<void> fetchDonors() async {
+    final DatabaseReference donorRef = FirebaseDatabase.instance.ref().child("donors");
+
+    // Fetch the data from Firebase Realtime Database
+    final snapshot = await donorRef.get();
+
+    if (snapshot.exists) {
+      // Parse the data and update the donor list
+      final donorsData = snapshot.value as Map<dynamic, dynamic>;
+      List<Map<String, String>> loadedDonors = [];
+      donorsData.forEach((key, value) {
+        loadedDonors.add({
+          'name': value['name'] ?? 'Unknown',
+          'bloodGroup': value['bloodGroup'] ?? 'Unknown',
+          'gender': value['gender'] ?? 'Unknown',
+          'phone': value['phone'] ?? 'Unknown',
+          'latitude': value['latitude']?.toString() ?? 'Unknown', // Convert to String
+          'longitude': value['longitude']?.toString() ?? 'Unknown', // Convert to String
+        });
+      });
+      print("data is $loadedDonors");
+
+      setState(() {
+        donors = loadedDonors; // Update the state with the fetched data
+      });
+    } else {
+      // Handle case where data doesn't exist
+      Get.snackbar("Error", "No donor data found.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
 
-    final List<Map<String, String>> donors = [
-      {
-        'name': 'John Doe',
-        'bloodGroup': 'O+',
-        'gender': 'Male',
-      },
-      {
-        'name': 'Jane Smith',
-        'bloodGroup': 'A+',
-        'gender': 'Female',
-      },
-      {
-        'name': 'Sarah Lee',
-        'bloodGroup': 'B+',
-        'gender': 'Female',
-      },
-      {
-        'name': 'Michael Green',
-        'bloodGroup': 'AB+',
-        'gender': 'Male',
-      },
-      {
-        'name': 'Emily Davis',
-        'bloodGroup': 'O-',
-        'gender': 'Female',
-      },
-      {
-        'name': 'David White',
-        'bloodGroup': 'A-',
-        'gender': 'Male',
-      },
-      {
-        'name': 'Sarah Lee',
-        'bloodGroup': 'B+',
-        'gender': 'Female',
-      },
-      {
-        'name': 'Michael Green',
-        'bloodGroup': 'AB+',
-        'gender': 'Male',
-      },
-      {
-        'name': 'Emily Davis',
-        'bloodGroup': 'O-',
-        'gender': 'Female',
-      },
-      {
-        'name': 'David White',
-        'bloodGroup': 'A-',
-        'gender': 'Male',
-      },
-    ];
+
+
+
+
 
     return Scaffold(
       appBar: PreferredSize(
@@ -77,6 +80,7 @@ class NearDonorScreen extends StatelessWidget {
               style: TextStyle(color: Colors.white),
             ),
 
+            iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
           ),
         ),
@@ -93,24 +97,41 @@ class NearDonorScreen extends StatelessWidget {
               const Text("Saving Lives, One Donation at a Time" ,style: TextStyle( fontWeight: FontWeight.w500,fontSize: 18 ),),
 
               const SizedBox(height: 20,),
-              GridView.builder(
-                shrinkWrap: true,  // Ensures the GridView doesn't take up more space than needed
-                physics: const NeverScrollableScrollPhysics(),  // Prevents nested scrolling behavior
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,  // Number of columns
-                  crossAxisSpacing: 16.0,  // Horizontal space between items
-                  mainAxisSpacing: 16.0,  // Vertical space between items
-                  childAspectRatio: 1.001,  // Adjust the card aspect ratio
+              SizedBox(
+                height: 500,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    childAspectRatio: 1.001,
+                  ),
+                  itemCount: donors.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to the Google Map screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage(lat: donors[index]['latitude']!, long: donors[index]['longitude']!, number: donors[index]['phone']!,)
+                          ),
+                        );
+                      },
+                      child: DonorCard(
+                        name: donors[index]['name']!,
+                        gender: donors[index]['gender']!,
+                        bloodGroup: donors[index]['bloodGroup']!,
+                      ),
+                    );
+                  },
                 ),
-                itemCount: donors.length,
-                itemBuilder: (context, index) {
-                  return DonorCard(
-                    name: donors[index]['name']!,
-                    gender: donors[index]['gender']!,
-                    bloodGroup: donors[index]['bloodGroup']!,
-                  );
-                },
               ),
+
+
+
             ],
           ),
         ),
@@ -119,13 +140,6 @@ class NearDonorScreen extends StatelessWidget {
     );
 
   }
-
-
-
-
-
-
-
 }
 class DonorCard extends StatelessWidget {
   final String name;
